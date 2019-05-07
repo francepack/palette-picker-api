@@ -11,59 +11,58 @@ app.locals.title = 'picker';
 app.use(bodyParser.json())
 
 // GET projects
-app.get("/api/v1/projects", (request, response) => {
+app.get("/api/v1/projects", (req, res) => {
 database("projects")
   .select()
   .then((projects) => {
-    response.status(200).json(projects);
+    res.status(200).json(projects);
   })
   .catch((error) => {
-    response.status(500).json({ error });
+    res.status(500).json({ error });
   });
 });
 
 // GET palettes
-app.get("/api/v1/palettes", (request, response) => {
+app.get("/api/v1/palettes", (req, res) => {
   database("palettes")
     .select()
     .then((palettes) => {
-      response.status(200).json(palettes);
+      res.status(200).json(palettes);
     })
     .catch((error) => {
-      response.status(500).json({ error });
+      res.status(500).json({ error });
     });
   });
 
 // GET a project
-app.get("/api/v1/projects/:id", (request, response) => {
+app.get("/api/v1/projects/:id", (req, res) => {
   database("projects")
-    .where("id", request.params.id)
+    .where("id", req.params.id)
     .select()
     .then((student) => {
-      response.status(200).json(student);
+      res.status(200).json(student);
     })
     .catch((error) => {
-      response.status(500).json({ error });
+      res.status(500).json({ error });
     });
   });
 
 // GET a palette
-  app.get("/api/v1/palettes/:id", (request, response) => {
+  app.get("/api/v1/palettes/:id", (req, res) => {
     database("palettes")
-      .where("id", request.params.id)
+      .where("id", req.params.id)
       .select()
       .then((student) => {
-        response.status(200).json(student);
+        res.status(200).json(student);
       })
       .catch((error) => {
-        response.status(500).json({ error });
+        res.status(500).json({ error });
       });
     });
 
 // POST new project
   app.post("/api/v1/projects", (req, res) => {
   const newProject = req.body;
-  console.log(newProject)
   if (!newProject.name) {
     return res.status(422).send({
       error: `Expected format: { name: <string> }`
@@ -79,6 +78,114 @@ app.get("/api/v1/projects/:id", (request, response) => {
     });
 });
 
+// POST new palette
+app.post("/api/v1/projects/:id/palettes", (req, res) => {
+  const newPalette = req.body;
+  for (let requiredParams of ['name', 'color1', 'color2', 'color3', 'color4', 'color5']) {
+    if (!newPalette[requiredParams]) {
+      return res.status(422).send({
+        error: `Expected format: { name: <string>, color1: <string>, color2: <string>, color3: <string>, color4: <string>, color5: <string> }`
+      })
+    }
+  }
+  database("projects").where('id', req.params.id).select()
+    .then(project => {
+      if(!project) {
+        return res.status(422).json({
+          error: `No project at id ${req.params.id} was found. Please check id in url, or post new project before adding this palette`
+        })
+      }
+    });
+    database('palettes').insert({...newPalette, project_id: req.params.id}, 'id')
+      .then(palette => {
+        res.status(201).json({id: palette[0]})
+      })
+      .catch(error => {
+        res.status(500).json({ error });
+      });
+});
+
+// PUT a project (change name)
+app.put("/api/v1/projects/:id", (req, res) => {
+  const updatedProject = req.body
+  if (!newProject.name) {
+    return res.status(422).send({
+      error: `Valid name entry required`
+    })
+  }
+  let found = false;
+  database('projects').select()
+    .then(projects => {
+      projects.forEach(project => {
+        if (project.id === parseInt(req.params.id)) {
+          found = true
+        }
+      })
+      if(!found) {
+        return res.status(404).json({
+          error: `No project at id ${req.params.id} found`
+        })
+      } else {
+        database('projects').where('id', req.params.id).update({
+          name: updatedProject.name,
+        })
+        .then(project => {
+          res.status(202).json({
+            error: `Project ID ${req.params.id} has been updated`
+          })
+        })
+      }
+    })
+    .catch(() => {
+      res.status(500).json({ error });
+    });
+});
+  
+// PUT a palette (change name or colors)
+app.put("/api/v1/palettes/:id", (req, res) => {
+  const updatedPalette = req.body
+  for (let requiredParams of ['name', 'color1', 'color2', 'color3', 'color4', 'color5']) {
+    if (!updatedPalette[requiredParams]) {
+      return res.status(422).send({
+        error: `Expected format: { name: <string>, color1: <string>, color2: <string>, color3: <string>, color4: <string>, color5: <string> }`
+      })
+    }
+  }
+  let found = false;
+  database('palette').select()
+    .then(palettes => {
+      palettes.forEach(palette=> {
+        if (palette.id === parseInt(req.params.id)) {
+          found = true
+        }
+      })
+      if(!found) {
+        return res.status(404).json({
+          error: `No palette at id ${req.params.id} found`
+        })
+      } else {
+        database('palettes').where('id', req.params.id).update({
+          name: updatedPalette.name,
+          color1: updatedPalette.color1,
+          color2: updatedPalette.color2,
+          color3: updatedPalette.color3,
+          color4: updatedPalette.color4,
+          color5: updatedPalette.color5,
+        })
+        .then(palette=> {
+          res.status(202).json({
+            error: `Palette ID ${req.params.id} has been updated`
+          })
+        })
+      }
+    })
+    .catch(() => {
+      res.status(500).json({ error });
+    });
+});
+
+
+// DELETE project and all associated palettes
 app.delete("/api/v1/projects/:id", (req, res) => {
 database("projects")
   .where("id", req.params.id)
@@ -91,19 +198,8 @@ database("projects")
   });
 });
 
+// DELETE a palette
 
-app.put("/api/v1/projects/:id", (req, res) => {
-  const updatedStudent = req.body
-  database("projects")
-    .where("id", req.params.id)
-    .insert(updatedStudent, "id")
-    .then(() => {
-      res.status(204).send("student was updated.")
-    })
-    .catch(() => {
-      res.status(500).json({ error: "student not found" });
-    });
-  });
-  
+
 
 module.exports = app
