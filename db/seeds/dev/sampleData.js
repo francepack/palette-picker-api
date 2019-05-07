@@ -8,7 +8,7 @@ const createProject = (knex, project) => {
       },
       'id'
     )
-    .then(projectID => {
+    .then(project_id => {
       let palettePromises = [];
 
       project.palettes.forEach(palette => {
@@ -20,7 +20,7 @@ const createProject = (knex, project) => {
             color3: palette.color3,
             color4: palette.color4,
             color5: palette.color5,
-            projectID: projectID[0]
+            project_id: project_id[0]
           })
         );
       });
@@ -40,7 +40,7 @@ exports.seed = (knex, Promise) => {
     .then(() => {
       let projectPromises = [];
 
-      data.forEach(project => {
+      sampleData.forEach(project => {
         projectPromises.push(createProject(knex, project));
       });
 
