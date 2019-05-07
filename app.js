@@ -10,6 +10,7 @@ app.locals.title = 'picker';
 
 app.use(bodyParser.json())
 
+// GET projects
 app.get("/api/v1/projects", (request, response) => {
 database("projects")
   .select()
@@ -21,6 +22,7 @@ database("projects")
   });
 });
 
+// GET palettes
 app.get("/api/v1/palettes", (request, response) => {
   database("palettes")
     .select()
@@ -32,6 +34,7 @@ app.get("/api/v1/palettes", (request, response) => {
     });
   });
 
+// GET a project
 app.get("/api/v1/projects/:id", (request, response) => {
   database("projects")
     .where("id", request.params.id)
@@ -44,6 +47,7 @@ app.get("/api/v1/projects/:id", (request, response) => {
     });
   });
 
+// GET a palette
   app.get("/api/v1/palettes/:id", (request, response) => {
     database("palettes")
       .where("id", request.params.id)
@@ -56,10 +60,17 @@ app.get("/api/v1/projects/:id", (request, response) => {
       });
     });
 
+// POST new project
   app.post("/api/v1/projects", (req, res) => {
-  const newStudent = req.body;
+  const newProject = req.body;
+  console.log(newProject)
+  if (!newProject.name) {
+    return res.status(422).send({
+      error: `Expected format: { name: <string> }`
+    })
+  }
   database("projects")
-    .insert(newStudent, "id")
+    .insert(newProject, "id")
     .then(projects => {
       res.status(200).json({ id: projects[0] });
     })
