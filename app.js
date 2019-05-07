@@ -108,7 +108,7 @@ app.post("/api/v1/projects/:id/palettes", (req, res) => {
 // PUT a project (change name)
 app.put("/api/v1/projects/:id", (req, res) => {
   const updatedProject = req.body
-  if (!newProject.name) {
+  if (!updatedProject.name) {
     return res.status(422).send({
       error: `Valid name entry required`
     })
@@ -152,7 +152,7 @@ app.put("/api/v1/palettes/:id", (req, res) => {
     }
   }
   let found = false;
-  database('palette').select()
+  database('palettes').select()
     .then(palettes => {
       palettes.forEach(palette=> {
         if (palette.id === parseInt(req.params.id)) {
@@ -186,20 +186,63 @@ app.put("/api/v1/palettes/:id", (req, res) => {
 
 
 // DELETE project and all associated palettes
-app.delete("/api/v1/projects/:id", (req, res) => {
-database("projects")
-  .where("id", req.params.id)
-  .del()
-  .then(() => {
-    res.status(204).send("student was deleted.")
-  })
-  .catch(error => {
-    res.status(500).json({ error: "student not found" });
-  });
+app.delete('/api/v1/projects/:id', (request, response) => {
+  let found = false;
+  database('projects').select()
+    .then(projects => {
+      projects.forEach(project => {
+        if (project.id === parseInt(request.params.id)) {
+          found = true;
+        }
+      });
+      if(!found) {
+        return response.status(404).json({ 
+          error: `Project at id ${request.params.id} was not found`
+        });
+      } else {
+        database('palettes').where('project_id', request.params.id).del()
+          .then(() => {
+            database('projects').where('id', request.params.id).del()
+              .then(() => {
+                response.status(202).json(
+                  `Successful deletion of project id ${request.params.id} and all associated palettes`
+                );
+              });
+          });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 // DELETE a palette
-
+app.delete('/api/v1/palettes/:id', (request, response) => {
+  let found = false;
+  database('palettes').select()
+    .then(palettes => {
+      palettes.forEach(palette => {
+        if (palette.id === parseInt(request.params.id)) {
+          found = true;
+        }
+      });
+      if(!found) {
+        return response.status(404).json({ 
+          error: `Palette at id ${request.params.id} was not found`
+        });
+      } else {
+        database('palettes').where('id', request.params.id).del()
+          .then(() => {
+            response.status(202).json(
+              `Successful deletion of palette id ${request.params.id}`
+            );
+          });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
 
 
 module.exports = app
