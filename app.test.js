@@ -3,8 +3,8 @@ const configuration = require('./knexfile')[environment]
 const database = require('knex')(configuration)
 import request from 'supertest'
 import app from './app'
-import projects from './projects'
-import palettes from './palettes'
+import projects from './TestData/projects'
+import palettes from './TestData/palettes'
 
 describe('/api/v1', () => {
 
@@ -14,10 +14,10 @@ describe('/api/v1', () => {
 
   describe('GET /projects', () => {
     it('should return all the projects in the DB', async ()=> {
-      const expectedProjects = projects.length
+      const expectedProjects = await database('projects').select()
       const res = await request(app).get('/api/v1/projects')
       const result = res.body
-      expect(result.length).toEqual(expectedProjects)
+      expect(result.length).toEqual(expectedProjects.length)
     })
   })
 
@@ -41,10 +41,10 @@ describe('/api/v1', () => {
 
   describe('GET /palettes', () => {
     it('should return all the palettes in the DB', async ()=> {
-      const expectedpalettes = palettes.length
+      const expectedPalettes = await database('palettes').select()
       const res = await request(app).get('/api/v1/palettes')
       const result = res.body
-      expect(result.length).toEqual(expectedpalettes)
+      expect(result.length).toEqual(expectedPalettes.length)
     })
   })
 
