@@ -95,14 +95,16 @@ app.post("/api/v1/projects/:id/palettes", (req, res) => {
           error: `No project at id ${req.params.id} was found. Please check id in url, or post new project before adding this palette`
         })
       }
+    })
+    .then(() => {
+      database('palettes').insert({...newPalette, project_id: req.params.id},   'id')
+        .then(palette => {
+          res.status(201).json({id: palette[0]})
+        })
+    })
+    .catch(error => {
+      res.status(500).json({ error });
     });
-    database('palettes').insert({...newPalette, project_id: req.params.id}, 'id')
-      .then(palette => {
-        res.status(201).json({id: palette[0]})
-      })
-      .catch(error => {
-        res.status(500).json({ error });
-      });
 });
 
 // PUT a project (change name)
