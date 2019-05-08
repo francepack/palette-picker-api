@@ -27,8 +27,8 @@ describe('/api/v1', () => {
       const id = expectedProject.id
       const res = await request(app).get(`/api/v1/projects/${id}`)
       const result = res.body[0]
-      expect(result.id).toBe(expectedProject.id)
-      })
+      expect(result.name).toBe(expectedProject.name)
+    })
   })
 
   describe('GET/ projects/:id sad path', () => {
@@ -36,7 +36,12 @@ describe('/api/v1', () => {
       const id = 6546
       const res = await request(app).get(`/api/v1/projects/${id}`)
       expect(res.status).toBe(404)
-      })
+    })
+    it('should return a 500 error if id in url is incorrect format, causing server error', async () => {
+      const id = 'ProjectName'
+      const res = await request(app).get(`/api/v1/palettes/${id}`)
+      expect(res.status).toBe(500)
+    })
   })
 
   describe('GET /palettes', () => {
@@ -54,8 +59,8 @@ describe('/api/v1', () => {
       const id = expectedPalette.id
       const res = await request(app).get(`/api/v1/palettes/${id}`)
       const result = res.body[0]
-      expect(result.id).toBe(expectedPalette.id)
-      })
+      expect(result.name).toBe(expectedPalette.name)
+    })
   })
 
   describe('GET/ palettes/:id sad path', () => {
@@ -63,7 +68,12 @@ describe('/api/v1', () => {
       const id = 47876
       const res = await request(app).get(`/api/v1/palettes/${id}`)
       expect(res.status).toBe(404)
-      })
+    })
+    it('should return a 500 error if id in url is incorrect format, causing server error', async () => {
+      const id = 'PaletteName'
+      const res = await request(app).get(`/api/v1/palettes/${id}`)
+      expect(res.status).toBe(500)
+    })
   })
 
 
