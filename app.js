@@ -39,8 +39,14 @@ app.get("/api/v1/projects/:id", (req, res) => {
   database("projects")
     .where("id", req.params.id)
     .select()
-    .then((student) => {
-      res.status(200).json(student);
+    .then((project) => {
+      if (project.length) {
+        res.status(200).json(project);
+      } else {
+        res.status(404).json({
+          error: `Project with id ${req.params.id} not found`
+        });
+      }
     })
     .catch((error) => {
       res.status(500).json({ error });
@@ -52,8 +58,14 @@ app.get("/api/v1/projects/:id", (req, res) => {
     database("palettes")
       .where("id", req.params.id)
       .select()
-      .then((student) => {
-        res.status(200).json(student);
+      .then((palette) => {
+        if (palette.length) {
+          res.status(200).json(palette);
+        } else {
+          res.status(404).json({
+            error: `Palette with id ${req.params.id} not found`
+          });
+        }
       })
       .catch((error) => {
         res.status(500).json({ error });
