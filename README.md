@@ -180,7 +180,7 @@ Add a new project
 ```
 
 ### POST **/api/v1/projects/:id/palettes**
-Add a palette to a particular project by id.
+Add a palette to a particular project by id. To post a palette, there must be an associated project at the id included in url.
 
 **Request-Body Input Description**
 
@@ -197,8 +197,11 @@ Add a palette to a particular project by id.
 ```
 {
   "name": "Mason France",
-  "nationality": "American",
-  "lifespan": "1640-1680"
+  "color1": "",
+  "color2": "",
+  "color3": "",
+  "color4": "",
+  "color5": ""
 }
 ```
 
@@ -206,7 +209,7 @@ Add a palette to a particular project by id.
 
 ```
 {
-  "id": 64
+  "id": 53
 }
 ```
 
@@ -214,13 +217,74 @@ Add a palette to a particular project by id.
 ### PUT **/api/v1/projects/:id**
 Revise a particular project by id.
 
+**Required Request Body Input**
+
+| Key Name | Data Type | Description |
+| ---- | :----: | ---- |
+| **name** | `string` | Name of your project |
+
+**Example Request Body:**
+```
+{
+  "name": "Time for a name change"
+}
+```
+
+**Example Response:**
+
+```
+Project ID 23 has been updated
+```
+
 ### PUT **/api/v1/palettes/:id**
 Revise a particular palette by id.
+
+**Request-Body Input Description**
+
+| Key Name | Data Type | Description |
+| ---- | :----: | ---- |
+| **name** | `string` | Name of color palette |
+| **color1** | `string` | First hex code |
+| **color2** | `string` | Second hex code |
+| **color3** | `string` | Third hex code |
+| **color4** | `string` | Fourth hex code |
+| **color5** | `string` | Fifth hex code |
+
+**Example Request:**
+```
+{
+  "name": "New palette",
+  "color1": "",
+  "color2": "",
+  "color3": "",
+  "color4": "",
+  "color5": ""
+}
+```
+
+**Example Response:**
+
+```
+{
+  Palette ID 42 has been updated
+}
+```
 
 ## DELETE
 ### DELETE **/api/v1/projects/:id**
 Delete a project.
 
 **Warning: This will delete all palettes associated with project**
+
+**Example Response:**
+```
+  Successful deletion of project id 12 and all associated palettes
+```
+
 ### DELETE **/api/v1/palettes/:id**
 Delete a palette.
+
+**Example Response:**
+```
+  Successful deletion of palette id 33
+```

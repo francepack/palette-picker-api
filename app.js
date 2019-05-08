@@ -132,9 +132,9 @@ app.put("/api/v1/projects/:id", (req, res) => {
           name: updatedProject.name,
         })
         .then(project => {
-          res.status(202).json({
-            error: `Project ID ${req.params.id} has been updated`
-          })
+          res.status(202).json(
+            `Project ID ${req.params.id} has been updated`
+          )
         })
       }
     })
@@ -175,9 +175,9 @@ app.put("/api/v1/palettes/:id", (req, res) => {
           color5: updatedPalette.color5,
         })
         .then(palette=> {
-          res.status(202).json({
-            error: `Palette ID ${req.params.id} has been updated`
-          })
+          res.status(202).json(
+            `Palette ID ${req.params.id} has been updated`
+          )
         })
       }
     })
