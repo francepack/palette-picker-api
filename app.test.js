@@ -39,7 +39,7 @@ describe('/api/v1', () => {
     })
     it('should return a 500 error if id in url is incorrect format, causing server error', async () => {
       const id = 'ProjectName'
-      const res = await request(app).get(`/api/v1/palettes/${id}`)
+      const res = await request(app).get(`/api/v1/projects/${id}`)
       expect(res.status).toBe(500)
     })
   })
@@ -63,7 +63,7 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('GET/ palettes/:id sad path', () => {
+  describe('GET /palettes/:id sad path', () => {
     it('should return a 404 error if an id is not found', async () => {
       const id = 47876
       const res = await request(app).get(`/api/v1/palettes/${id}`)
@@ -76,13 +76,36 @@ describe('/api/v1', () => {
     })
   })
 
+  describe('GET /projects/:id/palettes', () => {
+    it('should get all palettes of a certain project', async () => {
+      const exampleProject = await database('projects').first()
+      const id = exampleProject.id
+      const expectedPalettes = await database('palettes').where('project_id', id).select()
+      const res = await request(app).get(`/api/v1/projects/${id}/palettes`)
+      const result = res.body
+      expect(result.length).toEqual(expectedPalettes.length)
+    })
+  })
+
+  describe('GET /projects/:id/palettes sad path', () => {
+    it('should return 404 status if project is not found', async () => {
+      const id = 54325
+      const res = await request(app).get(`/api/v1/projects/${id}/palettes`)
+      expect(res.status).toBe(404)
+    })
+    it('should return a 500 error if id in url is incorrect format, causing server error', async () => {
+      const id = 'ProjectName'
+      const res = await request(app).get(`/api/v1/projects/${id}/palettes`)
+      expect(res.status).toBe(500)
+    })
+  })
 
   describe('POST /projects', () => {
     it('should post a new project to the db', async () => {
       const newProject = { name: 'Will'}
       const res = await request(app)
-                          .post('/api/v1/projects')
-                          .send(newProject)
+        .post('/api/v1/projects')
+        .send(newProject)
       const projects = await database('projects').where('id', res.body.id).select()
       const project = projects[0]
       expect(res.status).toBe(200)
@@ -93,8 +116,8 @@ describe('/api/v1', () => {
   describe('POST /projects', () => {
     it('give an error code for the sad path', async () => {
       const res = await request(app)
-                          .post('/api/v1/projects')
-                          .send('newProject')
+        .post('/api/v1/projects')
+        .send('newProject')
       const projects = await database('projects').where('id', 64).select()
       const project = projects[0]
       expect(res.status).toBe(422)
@@ -114,9 +137,8 @@ describe('/api/v1', () => {
         color5: 'test',
       }
       const res = await request(app)
-                          .post(`/api/v1/projects/${id}/palettes`)
-                          .send(newPalette)
-                          console.log( await res.body)
+        .post(`/api/v1/projects/${id}/palettes`)
+        .send(newPalette)
       const palettes = await database('palettes').where('id', res.body.id).select()
       const palette = palettes[0]
       expect(res.status).toBe(201)
@@ -127,8 +149,8 @@ describe('/api/v1', () => {
   describe('POST /palettes', () => {
     it('give an error code for the sad path', async () => {
       const res = await request(app)
-                          .post('/api/v1/palettes')
-                          .send('newPalette')
+        .post('/api/v1/palettes')
+        .send('newPalette')
       const palettes = await database('palettes').where('id', 64).select()
       const palette = palettes[0]
       expect(res.status).toBe(404)

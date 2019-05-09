@@ -54,26 +54,43 @@ app.get("/api/v1/projects/:id", (req, res) => {
   });
 
 // GET a palette
-  app.get("/api/v1/palettes/:id", (req, res) => {
-    database("palettes")
-      .where("id", req.params.id)
-      .select()
-      .then((palette) => {
-        if (palette.length) {
-          res.status(200).json(palette);
-        } else {
-          res.status(404).json({
-            error: `Palette with id ${req.params.id} not found`
-          });
-        }
-      })
-      .catch((error) => {
-        res.status(500).json({ error });
-      });
+app.get("/api/v1/palettes/:id", (req, res) => {
+  database("palettes")
+    .where("id", req.params.id)
+    .select()
+    .then((palette) => {
+      if (palette.length) {
+        res.status(200).json(palette);
+      } else {
+        res.status(404).json({
+          error: `Palette with id ${req.params.id} not found`
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
     });
+  });
+
+// GET all palettes of a project
+app.get("/api/v1/projects/:id/palettes", (req, res) => {
+  database("palettes").where("project_id", req.params.id).select()
+    .then(palettes => {
+      if (palettes.length) {
+        res.status(200).json(palettes);
+      } else {
+        res.status(404).json({
+          error: `Could not find palettess for project with id ${req.params.id}`
+        });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ error });
+    });
+});
 
 // POST new project
-  app.post("/api/v1/projects", (req, res) => {
+app.post("/api/v1/projects", (req, res) => {
   const newProject = req.body;
   if (!newProject.name) {
     return res.status(422).send({
@@ -200,61 +217,61 @@ app.put("/api/v1/palettes/:id", (req, res) => {
 
 
 // DELETE project and all associated palettes
-app.delete('/api/v1/projects/:id', (request, response) => {
+app.delete('/api/v1/projects/:id', (req, res) => {
   let found = false;
   database('projects').select()
     .then(projects => {
       projects.forEach(project => {
-        if (project.id === parseInt(request.params.id)) {
+        if (project.id === parseInt(req.params.id)) {
           found = true;
         }
       });
       if(!found) {
-        return response.status(404).json({ 
-          error: `Project at id ${request.params.id} was not found`
+        return res.status(404).json({ 
+          error: `Project at id ${req.params.id} was not found`
         });
       } else {
-        database('palettes').where('project_id', request.params.id).del()
+        database('palettes').where('project_id', req.params.id).del()
           .then(() => {
-            database('projects').where('id', request.params.id).del()
+            database('projects').where('id', req.params.id).del()
               .then(() => {
-                response.status(202).json(
-                  `Successful deletion of project id ${request.params.id} and all associated palettes`
+                res.status(202).json(
+                  `Successful deletion of project id ${req.params.id} and all associated palettes`
                 );
               });
           });
       }
     })
     .catch(error => {
-      response.status(500).json({ error });
+      res.status(500).json({ error });
     });
 });
 
 // DELETE a palette
-app.delete('/api/v1/palettes/:id', (request, response) => {
+app.delete('/api/v1/palettes/:id', (req, res) => {
   let found = false;
   database('palettes').select()
     .then(palettes => {
       palettes.forEach(palette => {
-        if (palette.id === parseInt(request.params.id)) {
+        if (palette.id === parseInt(req.params.id)) {
           found = true;
         }
       });
       if(!found) {
-        return response.status(404).json({ 
-          error: `Palette at id ${request.params.id} was not found`
+        return res.status(404).json({ 
+          error: `Palette at id ${req.params.id} was not found`
         });
       } else {
-        database('palettes').where('id', request.params.id).del()
+        database('palettes').where('id', req.params.id).del()
           .then(() => {
-            response.status(202).json(
-              `Successful deletion of palette id ${request.params.id}`
+            res.status(202).json(
+              `Successful deletion of palette id ${req.params.id}`
             );
           });
       }
     })
     .catch(error => {
-      response.status(500).json({ error });
+      res.status(500).json({ error });
     });
 });
 
