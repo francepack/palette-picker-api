@@ -179,32 +179,81 @@ describe('/api/v1', () => {
     })
   })
 
+  describe('PUT /projects/:id', () => {
+    it('should rename an existing project, keeping same id', () => {
 
-
-
-
-
-
-
-
-
-
-  describe('DELETE /projects/1', () => {
-    it('should delete a single project', async () => {
-      const expectedProject = await database('projects').first()
-      const id = expectedProject.id
-      const res = await request(app).del(`/api/v1/projects/${id}`)
-      const result = res.body[0]
-      expect(res.status).toEqual(202)
     })
   })
 
-  describe('DELETE /projects/1', () => {
+  describe('PUT /projects/:id sad path', () => {
+    
+  })
+
+  describe('PUT /palettes/:id', () => {
+    it('should revise an existing palette, keeping same id', () => {
+      
+    })
+  })
+
+  describe('PUT /palettes/:id sad path', () => {
+    
+  })
+
+
+
+
+
+
+
+  describe('DELETE /projects/:id', () => {
     it('should delete a single project', async () => {
-      const id = 'G'
+      const expectedProject = await database('projects').first()
+      const firstId = expectedProject.id
+      const res = await request(app).del(`/api/v1/projects/${firstId}`)
+      const newProjects = await database('projects').first()
+      const newFirstId = newProjects.id
+      expect(res.status).toEqual(202)
+      expect(newFirstId).not.toEqual(firstId)
+    })
+    it('should delete any palettes associated with a project', () => {
+
+    })
+  })
+
+  describe('DELETE /projects/:id sad path', () => {
+    it('should return a 404 error if project to be deleted is not found', async () => {
+      const id = 53254543
       const res = await request(app).del(`/api/v1/projects/${id}`)
       expect(res.status).toEqual(404)
     })
+    it('should return a 500 error ?', async () => {
+      
+    })
+  })
+
+
+  describe('DELETE /palettes/:id', () => {
+    it('should delete a single palette', async () => {
+      const expectedPalette = await database('palettes').first()
+      const firstId = expectedPalette.id
+      const res = await request(app).del(`/api/v1/palettes/${firstId}`)
+      const newPalettes = await database('palettes').first()
+      const newFirstId = newPalettes.id
+      expect(res.status).toEqual(202)
+      expect(newFirstId).not.toEqual(firstId)
+    })
+  })
+
+  describe('DELETE /palettes/:id sad path', () => {
+    it('should return a 404 error if palette to be deleted is not found', async () => {
+      const id = 456234444
+      const res = await request(app).del(`/api/v1/palettes/${id}`)
+      expect(res.status).toEqual(404)
+    })
+    it('should return a 500 error ?', async () => {
+      
+    })
   })
 })
+
 
