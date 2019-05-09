@@ -123,16 +123,6 @@ describe('POST /palettes', () => {
   })
 })
 
-
-
-
-
-
-
-
-
-
-
 describe('DELETE /projects/1', () => {
   it('should delete a single project', async () => {
     const expectedProject = await database('projects').first()
