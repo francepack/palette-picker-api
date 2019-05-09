@@ -180,7 +180,6 @@ describe('/api/v1', () => {
         .put(`/api/v1/projects/${projectId}`)
         .send(updateRequest)
       const result = res.body
-      console.log(result)
       expect(res.status).toBe(202)
       expect(result).toEqual(`Project ID ${projectId} has been updated`)
       // is there way to test updated name? Finalize this logic
@@ -218,7 +217,6 @@ describe('/api/v1', () => {
         .put(`/api/v1/palettes/${paletteId}`)
         .send(updateRequest)
       const result = res.body
-      console.log(result)
       expect(res.status).toBe(202)
       expect(result).toEqual(`Palette ID ${paletteId} has been updated`)
       // is there way to test updated name? Finalize this logic
@@ -247,12 +245,6 @@ describe('/api/v1', () => {
     })
   })
 
-
-
-
-
-
-
   describe('DELETE /projects/:id', () => {
     it('should delete a single project', async () => {
       const expectedProject = await database('projects').first()
@@ -263,8 +255,13 @@ describe('/api/v1', () => {
       expect(res.status).toEqual(202)
       expect(newFirstId).not.toEqual(firstId)
     })
-    it('should delete any palettes associated with a project', () => {
-
+    it('should delete any palettes associated with a project', async () => {
+      const palettes = await database('palettes').select()
+      const exampleProject = await database('projects').first()
+      const projectId = exampleProject.id
+      const res = await request(app).del(`/api/v1/projects/${projectId}`)
+      const newPalettes = await database('palettes').select()
+      expect(newPalettes.length).toBeLessThan(palettes.length)
     })
   })
 
@@ -274,9 +271,9 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/projects/${id}`)
       expect(res.status).toEqual(404)
     })
-    it('should return a 500 error ?', async () => {
+    // it('should return a 500 error ?', async () => {
       
-    })
+    // })
   })
 
 
@@ -298,9 +295,9 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/palettes/${id}`)
       expect(res.status).toEqual(404)
     })
-    it('should return a 500 error ?', async () => {
+    // it('should return a 500 error ?', async () => {
       
-    })
+    // })
   })
 })
 

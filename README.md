@@ -156,7 +156,7 @@ Get all palettes of a particular project by id from database.
 
 ## POST
 ### POST **/api/v1/projects**
-Add a new project
+Add a new project.
 
 **Required Request Body Input**
 
