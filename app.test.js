@@ -3,8 +3,6 @@ const configuration = require('./knexfile')[environment]
 const database = require('knex')(configuration)
 import request from 'supertest'
 import app from './app'
-import projects from './TestData/projects'
-import palettes from './TestData/palettes'
 
 describe('/api/v1', () => {
 
@@ -119,8 +117,6 @@ describe('/api/v1', () => {
       const res = await request(app)
         .post('/api/v1/projects')
         .send(invalidProject)
-      // const projects = await database('projects').where('id', res.body.id).select()
-      // const project = projects[0]
       expect(res.status).toBe(422)
     })
   })
@@ -155,8 +151,6 @@ describe('/api/v1', () => {
       const res = await request(app)
         .post(`/api/v1/projects/${id}/palettes`)
         .send(invalidPalette)
-      // const palettes = await database('palettes').where('id', 64).select()
-      // const palette = palettes[0]
       expect(res.status).toBe(422)
     })
     it('should return a 422 error when incorrect project id is used', async () => {
@@ -165,8 +159,6 @@ describe('/api/v1', () => {
       const res = await request(app)
         .post(`/api/v1/projects/${invalidProjectId}/palettes`)
         .send(validPalette)
-      // const palettes = await database('palettes').where('id', 64).select()
-      // const palette = palettes[0]
       expect(res.status).toBe(422)
     })
     it('should return a 500 error if id in url is incorrect format, causing server error', async () => {
@@ -175,28 +167,84 @@ describe('/api/v1', () => {
       const res = await request(app)
         .post(`/api/v1/projects/${id}/palettes`)
         .send(validPalette)
-        expect(res.status).toBe(500)
+      expect(res.status).toBe(500)
     })
   })
 
   describe('PUT /projects/:id', () => {
-    it('should rename an existing project, keeping same id', () => {
-
+    it('should rename an existing project, keeping same id', async () => {
+      const exampleProject = await database('projects').first()
+      const projectId = exampleProject.id
+      const updateRequest = { name: 'NewName' }
+      const res = await request(app)
+        .put(`/api/v1/projects/${projectId}`)
+        .send(updateRequest)
+      const result = res.body
+      console.log(result)
+      expect(res.status).toBe(202)
+      expect(result).toEqual(`Project ID ${projectId} has been updated`)
+      // is there way to test updated name? Finalize this logic
+      const newName = await database('projects').first()
+      expect(newName.name).toBe('NewName')
     })
   })
 
   describe('PUT /projects/:id sad path', () => {
-    
+    it('should return 404 error if no project is found at given id', async () => {
+      const id = 'invalidId'
+      const validUpdateRequest = { name: 'New Name' }
+      const res = await request(app)
+        .put(`/api/v1/projects/${id}`)
+        .send(validUpdateRequest)
+      expect(res.status).toBe(404)
+    })
+    it('should return a 422 error when incorrect request format used', async () => {
+      const exampleProject = await database('projects').first()
+      const projectId = exampleProject.id
+      const updateRequest = { wrongKey: 'Yup' }
+      const res = await request(app)
+        .put(`/api/v1/projects/${projectId}`)
+        .send(updateRequest)
+      expect(res.status).toBe(422)
+    })
   })
 
   describe('PUT /palettes/:id', () => {
-    it('should revise an existing palette, keeping same id', () => {
-      
+    it('should revise an existing palette, keeping same id', async () => {
+      const examplePalette = await database('palettes').first()
+      const paletteId = examplePalette.id
+      const updateRequest = { name: 'NewName', color1: 'grey', color2: 'red', color3: 'gold', color4: 'silver', color5: 'brown' }
+      const res = await request(app)
+        .put(`/api/v1/palettes/${paletteId}`)
+        .send(updateRequest)
+      const result = res.body
+      console.log(result)
+      expect(res.status).toBe(202)
+      expect(result).toEqual(`Palette ID ${paletteId} has been updated`)
+      // is there way to test updated name? Finalize this logic
+      const newName = await database('palettes').first()
+      expect(newName.name).toBe('NewName')
     })
   })
 
   describe('PUT /palettes/:id sad path', () => {
-    
+    it('should return 404 error if no palette is found at given id', async () => {
+      const id = 'invalidId'
+      const validUpdateRequest = { name: 'New Name', color1: 'white', color2: 'gold', color3: 'pink', color4: 'black', color5: 'red' }
+      const res = await request(app)
+        .put(`/api/v1/palettes/${id}`)
+        .send(validUpdateRequest)
+      expect(res.status).toBe(404)
+    })
+    it('should return a 422 error when incorrect request format used', async () => {
+      const examplePalette = await database('palettes').first()
+      const paletteId = examplePalette.id
+      const updateRequest = { wrongKey: 'Yup', missingKeys: 'indeed' }
+      const res = await request(app)
+        .put(`/api/v1/projects/${paletteId}`)
+        .send(updateRequest)
+      expect(res.status).toBe(422)
+    })
   })
 
 

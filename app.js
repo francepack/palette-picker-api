@@ -162,6 +162,7 @@ app.put("/api/v1/projects/:id", (req, res) => {
         })
         .then(project => {
           res.status(202).json(
+            // project
             `Project ID ${req.params.id} has been updated`
           )
         })
