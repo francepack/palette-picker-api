@@ -102,7 +102,7 @@ describe('/api/v1', () => {
 
   describe('POST /projects', () => {
     it('should post a new project to the db', async () => {
-      const newProject = { name: 'Will'}
+      const newProject = { name: 'Will' }
       const res = await request(app)
         .post('/api/v1/projects')
         .send(newProject)
@@ -113,18 +113,19 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('POST /projects', () => {
-    it('give an error code for the sad path', async () => {
+  describe('POST /projects sad path', () => {
+    it('should return a 422 error when incorrect request format used', async () => {
+      const invalidProject = { wrongKey: 'Will' }
       const res = await request(app)
         .post('/api/v1/projects')
-        .send('newProject')
-      const projects = await database('projects').where('id', 64).select()
-      const project = projects[0]
+        .send(invalidProject)
+      // const projects = await database('projects').where('id', res.body.id).select()
+      // const project = projects[0]
       expect(res.status).toBe(422)
     })
   })
 
-  describe('POST /palettes', () => {
+  describe('POST /projects/:id/palettes', () => {
     it('should post a new palette to the db', async () => {
       const project = await database('projects').first()
       const id = project.id
@@ -146,14 +147,35 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('POST /palettes', () => {
-    it('give an error code for the sad path', async () => {
+  describe('POST /project/:id/palettes sad path', () => {
+    it('should return a 422 error when incorrect request format used', async () => {
+      const invalidPalette = { wrongKey: 'Will', missingkeys: 'yes' }
+      const exampleProject = await database('projects').first()
+      const id = exampleProject.id
       const res = await request(app)
-        .post('/api/v1/palettes')
-        .send('newPalette')
-      const palettes = await database('palettes').where('id', 64).select()
-      const palette = palettes[0]
-      expect(res.status).toBe(404)
+        .post(`/api/v1/projects/${id}/palettes`)
+        .send(invalidPalette)
+      // const palettes = await database('palettes').where('id', 64).select()
+      // const palette = palettes[0]
+      expect(res.status).toBe(422)
+    })
+    it('should return a 422 error when incorrect project id is used', async () => {
+      const validPalette = { name: 'Cool colors', color1: 'red', color2: 'yellow', color3: 'blue', color4: 'purple', color5: 'magenta' }
+      const invalidProjectId = 4239874
+      const res = await request(app)
+        .post(`/api/v1/projects/${invalidProjectId}/palettes`)
+        .send(validPalette)
+      // const palettes = await database('palettes').where('id', 64).select()
+      // const palette = palettes[0]
+      expect(res.status).toBe(422)
+    })
+    it('should return a 500 error if id in url is incorrect format, causing server error', async () => {
+      const validPalette = { name: 'Cool colors', color1: 'red', color2: 'yellow', color3: 'blue', color4: 'purple', color5: 'magenta' }
+      const id = 'notNumber'
+      const res = await request(app)
+        .post(`/api/v1/projects/${id}/palettes`)
+        .send(validPalette)
+        expect(res.status).toBe(500)
     })
   })
 
