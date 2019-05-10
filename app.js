@@ -6,12 +6,12 @@ const configuration = require("./knexfile")[environment]
 const database = require("knex")(configuration)
 const cors = require('cors')
 
-
+// app.use(express.json())
+app.use(bodyParser.json())
 app.use(cors())
 
 app.locals.title = "picker";
 
-app.use(bodyParser.json())
 
 // GET projects
 app.get("/api/v1/projects", (req, res) => {
