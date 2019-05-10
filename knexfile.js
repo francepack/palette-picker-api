@@ -42,7 +42,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: 'postgres://localhost/picker',
+    connection: 'postgres://localhost/picker/',
     migrations: {
       directory: './db/migrations'
     },
