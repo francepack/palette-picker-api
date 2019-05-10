@@ -21,6 +21,11 @@
     "test": "jest --watchAll",
     "start": "node server.js"
   },
+  "scripts": {
+    "start": "node server.js",
+    "test": "NODE_ENV=test jest"
+  },
+  
   "keywords": [],
   "author": "",
   "license": "ISC"
