@@ -39,10 +39,9 @@ module.exports = {
       tableName: 'knex_migrations'
     }
   },
-
   production: {
     client: 'pg',
-    connection: 'postgres://localhost/picker',
+    connection: process.env.DATABASE_URL + `?ssl=true`,
     migrations: {
       directory: './db/migrations'
     },
