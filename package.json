@@ -18,15 +18,13 @@
     "@babel/preset-env": "^7.4.4"
   },
   "scripts": {
-    "test": "jest --watchAll",
-    "start": "node server.js"
-  },
-  "scripts": {
+    "test": "jest --forceExit",
     "start": "node server.js",
-    "test": "NODE_ENV=test jest"
+    "start:nodemon": "nodemon server.js",
+    "migrate": "knex migrate:latest --env=test",
+    "seed": "knex seed:run --env=test"
   },
-  
   "keywords": [],
-  "author": "",
+  "author": "mason",
   "license": "ISC"
 }
