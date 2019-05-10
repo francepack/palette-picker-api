@@ -20,7 +20,9 @@
   "scripts": {
     "test": "jest --forceExit",
     "start": "node server.js",
-    "start:nodemon": "nodemon server.js"
+    "start:nodemon": "nodemon server.js",
+    "migrate": "knex migrate:latest --env=test",
+    "seed": "knex seed:run --env=test"
   },
   "keywords": [],
   "author": "mason",
