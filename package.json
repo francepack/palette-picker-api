@@ -18,8 +18,9 @@
     "@babel/preset-env": "^7.4.4"
   },
   "scripts": {
-    "test": "jest --watchAll",
-    "start": "node server.js"
+    "test": "NODE_ENV=test jest",
+    "start": "node server.js",
+    "start-nodemon": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
