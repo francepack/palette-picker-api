@@ -1,9 +1,13 @@
 language: node_js
 node_js:
-  - "node"
+- node
 services:
-  - postgresql
+- postgresql
 before_script:
-  - psql -c 'create database projects_test;' -U postgres
-  - knex migrate:latest --env=test
-  - knex seed:run --env=test
+- psql -c 'create database projects_test;' -U postgres
+- knex migrate:latest --env=test
+- knex seed:run --env=test
+deploy:
+  provider: heroku
+  api_key:
+    secure: cds3TaE9B6rKM7VkBBayYhOfJRRQf3p4u8VYTF6gsI1Wr33HUT/eOgSsBYl8wpCnqA9AyDLnxG52r7zpwHgcA7ss4SJWC+E5bUIrbw9GbjMkXaCTGbRqPvXOV/rNWSXvsn5ACiKekTXda3OrODyMROsChVjIyDCBn0mMg36WBqw7TeXda8cVGYgA/58XYaAtbgPKo5K7OfTUa55xC1XWDdTXqU8qERut6zYkRhARbEckOSE72nRmvIKwnB2+SAqw2z0gv1khW0S/RfCINpRnNmu3Gtx2ZVCX+Uvh1moibxEQ8im5clDBxG1hSERHJsXGtUjd23jcx89bQIMkMZnYIzjP0qFLWfu/uA0fnrrejxpQ7nbNbuS5MAZ3S9KfnS2jfkKfcwZAEcEjghE1L8gSt4FVgyl7mW1fdJgO/ImRpITMxQ2QLLY8kjkiQCNzKDKcMzlD/3eXVlD5VLxh0LaXv14D37BXDJ9Atj831HHhlgG/q4WWwJIGu9BT7xtCfFNoBA2+bn1FgBODtTD99dPF8OUcoDzA5arWP0+uiSoFZjZdbsYSxH/zxJVW2WuhVQw0LKApw93UGZw2N0joKMyqaIaFGYRvKwS01xnRhoJsiC9j1HPejhIezo35TohlNfdvKAZkHoe01N762KdiHOY1KfOtW3pJa8Cmao9rshuNSdo=
