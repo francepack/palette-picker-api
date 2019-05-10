@@ -23,6 +23,6 @@
     "start:nodemon": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "mason",
   "license": "ISC"
 }
