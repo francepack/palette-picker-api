@@ -4,19 +4,19 @@ const sampleData = [
     palettes: [
       {
         name: 'palette1',
-        color1: 'blue',
-        color2: 'red',
-        color3: 'yellow',
-        color4: 'green',
-        color5: 'purple',
+        color1: '33812B',
+        color2: 'A0B09E',
+        color3: '39D8B4',
+        color4: '9D27AB',
+        color5: '652B81',
       },
       {
         name: 'palette2',
-        color1: 'redder',
-        color2: 'yellowish',
-        color3: 'blarg',
-        color4: 'vomit',
-        color5: 'purps',
+        color1: '0844A0',
+        color2: '81812B',
+        color3: '652B81',
+        color4: 'F1B26B',
+        color5: 'D7AAEF',
       }
     ]
   },
@@ -25,19 +25,19 @@ const sampleData = [
     palettes: [
       {
         name: 'palette3',
-        color1: 'yes',
-        color2: 'no',
-        color3: 'maybe',
-        color4: 'so',
-        color5: 'yesagain',
+        color1: '39D8B4',
+        color2: 'A0B09E',
+        color3: '33812B',
+        color4: 'D7AAEF',
+        color5: 'BA7080',
       },
       {
         name: 'palette4',
-        color1: 'a',
-        color2: 'b',
-        color3: 'c',
-        color4: 'd',
-        color5: 'e',
+        color1: 'F1B26B',
+        color2: '0844A0',
+        color3: '652B81',
+        color4: '9D27AB',
+        color5: '655D6A',
       }
     ]
   },
@@ -46,19 +46,19 @@ const sampleData = [
     palettes: [
       {
         name: 'palette5',
-        color1: '123',
-        color2: '234',
-        color3: '435',
-        color4: '567',
-        color5: '865',
+        color1: '81812B',
+        color2: '9D27AB',
+        color3: 'D7AAEF',
+        color4: 'F1B26B',
+        color5: '0844A0',
       },
       {
         name: 'palette6',
-        color1: 'value',
-        color2: 'sample',
-        color3: 'example',
-        color4: 'mock',
-        color5: 'jest',
+        color1: 'A0B09E',
+        color2: '652B81',
+        color3: '81812B',
+        color4: '39D8B4',
+        color5: '33812B',
       }
     ]
   }
