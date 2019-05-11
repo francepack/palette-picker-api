@@ -23,6 +23,7 @@ const send422 = (res, message) => res.status(422).json(message)
 const send500 = (res, message) => res.status(500).json(message)
 
 // Home route
+app.get("/", (req, res) => send200(res, 'Palette Picker- please see documentation for use'));
 
 // GET projects
 app.get("/api/v1/projects", (req, res) => {

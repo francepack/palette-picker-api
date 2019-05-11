@@ -10,6 +10,15 @@ describe('/api/v1', () => {
     await database.seed.run()
   })
 
+  describe('GET /', () => {
+    it('should return a message', async () => {
+      const res = await request(app).get('/')
+      const result = res.body
+      expect(res.status).toBe(200)
+      expect(result).toBe('Palette Picker- please see documentation for use')
+    })
+  })
+
   describe('GET /projects', () => {
     it('should return all the projects in the DB', async ()=> {
       const expectedProjects = await database('projects').select()
