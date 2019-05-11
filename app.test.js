@@ -10,6 +10,15 @@ describe('/api/v1', () => {
     await database.seed.run()
   })
 
+  describe('GET /', () => {
+    it('should return a message', async () => {
+      const res = await request(app).get('/')
+      const result = res.body
+      expect(res.status).toBe(200)
+      expect(result).toBe('Palette Picker- please see documentation for use')
+    })
+  })
+
   describe('GET /projects', () => {
     it('should return all the projects in the DB', async ()=> {
       const expectedProjects = await database('projects').select()
@@ -19,7 +28,7 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('GET/ projects/:id', () => {
+  describe('GET /projects/:id', () => {
     it('should return a single project', async () => {
       const expectedProject = await database('projects').first()
       const id = expectedProject.id
@@ -29,7 +38,7 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('GET/ projects/:id sad path', () => {
+  describe('GET /projects/:id sad path', () => {
     it('should return a 404 error if an id is not found', async () => {
       const id = 6546
       const res = await request(app).get(`/api/v1/projects/${id}`)
@@ -51,7 +60,7 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('GET/ palettes/:id', () => {
+  describe('GET /palettes/:id', () => {
     it('should return a single project', async () => {
       const expectedPalette = await database('palettes').first()
       const id = expectedPalette.id
@@ -71,6 +80,19 @@ describe('/api/v1', () => {
       const id = 'PaletteName'
       const res = await request(app).get(`/api/v1/palettes/${id}`)
       expect(res.status).toBe(500)
+    })
+  })
+
+  // GET Palettes by name, or other custom endpoint
+  describe('GET /palettes?name', () => {
+    it('should get a palette by name', () => {
+
+    })
+  })
+
+  describe('GET /palettes?name sad path', () => {
+    it('should return 404 error if name does not exist', () => {
+      
     })
   })
 
@@ -106,7 +128,7 @@ describe('/api/v1', () => {
         .send(newProject)
       const projects = await database('projects').where('id', res.body.id).select()
       const project = projects[0]
-      expect(res.status).toBe(200)
+      expect(res.status).toBe(201)
       expect(project.name).toEqual(newProject.name)
     })
   })
@@ -182,9 +204,8 @@ describe('/api/v1', () => {
       const result = res.body
       expect(res.status).toBe(202)
       expect(result).toEqual(`Project ID ${projectId} has been updated`)
-      // is there way to test updated name? Finalize this logic
-      // const newName = await database('projects').first()
-      // expect(newName.name).toBe('NewName')
+      const newName = await database('projects').where('id', projectId).select()
+      expect(newName[0].name).toBe('NewName')
     })
   })
 
@@ -219,9 +240,8 @@ describe('/api/v1', () => {
       const result = res.body
       expect(res.status).toBe(202)
       expect(result).toEqual(`Palette ID ${paletteId} has been updated`)
-      // is there way to test updated name? Finalize this logic
-      // const newName = await database('palettes').first()
-      // expect(newName.name).toBe('NewName')
+      const newName = await database('palettes').where('id', paletteId).select()
+      expect(newName[0].name).toBe('NewName')
     })
   })
 
@@ -252,7 +272,7 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/projects/${firstId}`)
       const newProjects = await database('projects').first()
       const newFirstId = newProjects.id
-      expect(res.status).toEqual(202)
+      expect(res.status).toEqual(204)
       expect(newFirstId).not.toEqual(firstId)
     })
     it('should delete any palettes associated with a project', async () => {
@@ -271,9 +291,6 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/projects/${id}`)
       expect(res.status).toEqual(404)
     })
-    // it('should return a 500 error ?', async () => {
-      
-    // })
   })
 
 
@@ -284,7 +301,7 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/palettes/${firstId}`)
       const newPalettes = await database('palettes').first()
       const newFirstId = newPalettes.id
-      expect(res.status).toEqual(202)
+      expect(res.status).toEqual(204)
       expect(newFirstId).not.toEqual(firstId)
     })
   })
@@ -295,9 +312,6 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/palettes/${id}`)
       expect(res.status).toEqual(404)
     })
-    // it('should return a 500 error ?', async () => {
-      
-    // })
   })
 })
 

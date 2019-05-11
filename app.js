@@ -6,22 +6,34 @@ const configuration = require("./knexfile")[environment]
 const database = require("knex")(configuration)
 const cors = require('cors')
 
-// app.use(express.json())
 app.use(bodyParser.json())
 app.use(cors())
 
 app.locals.title = "picker";
 
+// Response Success functions
+const send200 = (res, message) => res.status(200).json(message)
+const send201 = (res, message) => res.status(201).json(message)
+const send202 = (res, message) => res.status(202).json(message)
+const send204 = (res, message) => res.status(204).send(message)
+
+// Response Error functions
+const send404 = (res, message) => res.status(404).json(message)
+const send422 = (res, message) => res.status(422).json(message)
+const send500 = (res, message) => res.status(500).json(message)
+
+// Home route
+app.get("/", (req, res) => send200(res, 'Palette Picker- please see documentation for use'));
 
 // GET projects
 app.get("/api/v1/projects", (req, res) => {
 database("projects")
   .select()
   .then((projects) => {
-    res.status(200).json(projects);
+    send200(res, projects);
   })
   .catch((error) => {
-    res.status(500).json({ error });
+    send500(res, error.message);
   });
 });
 
@@ -30,10 +42,10 @@ app.get("/api/v1/palettes", (req, res) => {
   database("palettes")
     .select()
     .then((palettes) => {
-      res.status(200).json(palettes);
+      send200(res, palettes);
     })
     .catch((error) => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
   });
 
@@ -44,15 +56,13 @@ app.get("/api/v1/projects/:id", (req, res) => {
     .select()
     .then((project) => {
       if (project.length) {
-        res.status(200).json(project);
+        send200(res, project);
       } else {
-        res.status(404).json({
-          error: `Project with id ${req.params.id} not found`
-        });
+        send404(res, `Project with id ${req.params.id} not found`);
       }
     })
     .catch((error) => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
   });
 
@@ -63,15 +73,13 @@ app.get("/api/v1/palettes/:id", (req, res) => {
     .select()
     .then((palette) => {
       if (palette.length) {
-        res.status(200).json(palette);
+        send200(res, palette);
       } else {
-        res.status(404).json({
-          error: `Palette with id ${req.params.id} not found`
-        });
+        send404(res, `Palette with id ${req.params.id} not found`);
       }
     })
     .catch((error) => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
   });
 
@@ -80,33 +88,31 @@ app.get("/api/v1/projects/:id/palettes", (req, res) => {
   database("palettes").where("project_id", req.params.id).select()
     .then(palettes => {
       if (palettes.length) {
-        res.status(200).json(palettes);
+        send200(res, palettes);
       } else {
-        res.status(404).json({
-          error: `Could not find palettess for project with id ${req.params.id}`
-        });
+        send404(res, `Could not find palettess for project with id ${req.params.id}`);
       }
     })
     .catch(error => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
 });
+
+// GET palette by name
 
 // POST new project
 app.post("/api/v1/projects", (req, res) => {
   const newProject = req.body;
   if (!newProject.name) {
-    return res.status(422).send({
-      error: `Expected format: { name: <string> }`
-    })
+    send422(res, `Expected format: { name: <string> }`);
   }
   database("projects")
     .insert(newProject, "id")
     .then(projects => {
-      res.status(200).json({ id: projects[0] });
+      send201(res, { id: projects[0] });
     })
     .catch(error => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
 });
 
@@ -115,27 +121,23 @@ app.post("/api/v1/projects/:id/palettes", (req, res) => {
   const newPalette = req.body;
   for (let requiredParams of ["name", "color1", "color2", "color3", "color4", "color5"]) {
     if (!newPalette[requiredParams]) {
-      return res.status(422).send({
-        error: `Expected format: { name: <string>, color1: <string>, color2: <string>, color3: <string>, color4: <string>, color5: <string> }`
-      })
+      send422(res, `Expected format: { name: <string>, color1: <string>, color2: <string>, color3: <string>, color4: <string>, color5: <string> }`);
     }
   }
   database("projects").where("id", req.params.id).select()
     .then(project => {
       if(!project.length) {
-        return res.status(422).json({
-          error: `No project at id ${req.params.id} was found. Please check id in url, or post new project before adding this palette`
-        })
+        send422(res, `No project at id ${req.params.id} was found. Please check id in url, or post new project before adding this palette`);
       }
     })
     .then(() => {
       database("palettes").insert({...newPalette, project_id: req.params.id},   "id")
         .then(palette => {
-          res.status(201).json({id: palette[0]})
+          send201(res, {id: palette[0]});
         })
     })
     .catch(error => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
 });
 
@@ -143,9 +145,7 @@ app.post("/api/v1/projects/:id/palettes", (req, res) => {
 app.put("/api/v1/projects/:id", (req, res) => {
   const updatedProject = req.body
   if (!updatedProject.name) {
-    return res.status(422).send({
-      error: `Valid name entry required`
-    })
+    send422(res, `Valid name entry required: Expected format: { name: <string> }`);
   }
   let found = false;
   database("projects").select()
@@ -156,23 +156,18 @@ app.put("/api/v1/projects/:id", (req, res) => {
         }
       })
       if(!found) {
-        return res.status(404).json({
-          error: `No project at id ${req.params.id} found`
-        })
+        send404(res, `No project at id ${req.params.id} found`);
       } else {
         database("projects").where("id", req.params.id).update({
           name: updatedProject.name,
         })
         .then(project => {
-          res.status(202).json(
-            // project
-            `Project ID ${req.params.id} has been updated`
-          )
+          send202(res, `Project ID ${req.params.id} has been updated`);
         })
       }
     })
     .catch(() => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
 });
   
@@ -181,9 +176,7 @@ app.put("/api/v1/palettes/:id", (req, res) => {
   const updatedPalette = req.body
   for (let requiredParams of ["name", "color1", "color2", "color3", "color4", "color5"]) {
     if (!updatedPalette[requiredParams]) {
-      return res.status(422).send({
-        error: `Expected format: { name: <string>, color1: <string>, color2: <string>, color3: <string>, color4: <string>, color5: <string> }`
-      })
+      send422(res, `Expected format: { name: <string>, color1: <string>, color2: <string>, color3: <string>, color4: <string>, color5: <string> }`);
     }
   }
   let found = false;
@@ -195,9 +188,7 @@ app.put("/api/v1/palettes/:id", (req, res) => {
         }
       })
       if(!found) {
-        return res.status(404).json({
-          error: `No palette at id ${req.params.id} found`
-        })
+        send404(res, `No palette at id ${req.params.id} found`);
       } else {
         database("palettes").where("id", req.params.id).update({
           name: updatedPalette.name,
@@ -208,17 +199,14 @@ app.put("/api/v1/palettes/:id", (req, res) => {
           color5: updatedPalette.color5,
         })
         .then(palette=> {
-          res.status(202).json(
-            `Palette ID ${req.params.id} has been updated`
-          )
+          send202(res, `Palette ID ${req.params.id} has been updated`);
         })
       }
     })
     .catch(() => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
 });
-
 
 // DELETE project and all associated palettes
 app.delete("/api/v1/projects/:id", (req, res) => {
@@ -231,23 +219,19 @@ app.delete("/api/v1/projects/:id", (req, res) => {
         }
       });
       if(!found) {
-        return res.status(404).json({ 
-          error: `Project at id ${req.params.id} was not found`
-        });
+        send404(res, `Project at id ${req.params.id} was not found`);
       } else {
         database("palettes").where("project_id", req.params.id).del()
           .then(() => {
             database("projects").where("id", req.params.id).del()
               .then(() => {
-                res.status(202).json(
-                  `Successful deletion of project id ${req.params.id} and all associated palettes`
-                );
+                send204(res, `Successful deletion of project id ${req.params.id} and all associated palettes`);
               });
           });
       }
     })
     .catch(error => {
-      res.status(500).json({ error });
+      sned500(res, error.message);
     });
 });
 
@@ -262,22 +246,17 @@ app.delete("/api/v1/palettes/:id", (req, res) => {
         }
       });
       if(!found) {
-        return res.status(404).json({ 
-          error: `Palette at id ${req.params.id} was not found`
-        });
+        send404(res, `Palette at id ${req.params.id} was not found`);
       } else {
         database("palettes").where("id", req.params.id).del()
           .then(() => {
-            res.status(202).json(
-              `Successful deletion of palette id ${req.params.id}`
-            );
+            send204(res, `Successful deletion of palette id ${req.params.id}`);
           });
       }
     })
     .catch(error => {
-      res.status(500).json({ error });
+      send500(res, error.message);
     });
 });
-
 
 module.exports = app
