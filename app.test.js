@@ -106,7 +106,7 @@ describe('/api/v1', () => {
         .send(newProject)
       const projects = await database('projects').where('id', res.body.id).select()
       const project = projects[0]
-      expect(res.status).toBe(200)
+      expect(res.status).toBe(201)
       expect(project.name).toEqual(newProject.name)
     })
   })
