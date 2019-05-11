@@ -83,6 +83,19 @@ describe('/api/v1', () => {
     })
   })
 
+  // GET Palettes by name, or other custom endpoint
+  describe('GET /palettes?name', () => {
+    it('should get a palette by name', () => {
+
+    })
+  })
+
+  describe('GET /palettes?name sad path', () => {
+    it('should return 404 error if name does not exist', () => {
+      
+    })
+  })
+
   describe('GET /projects/:id/palettes', () => {
     it('should get all palettes of a certain project', async () => {
       const exampleProject = await database('projects').first()
@@ -278,9 +291,6 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/projects/${id}`)
       expect(res.status).toEqual(404)
     })
-    // it('should return a 500 error ?', async () => {
-      
-    // })
   })
 
 
@@ -302,9 +312,6 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/palettes/${id}`)
       expect(res.status).toEqual(404)
     })
-    // it('should return a 500 error ?', async () => {
-      
-    // })
   })
 })
 
