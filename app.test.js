@@ -19,7 +19,7 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('GET/ projects/:id', () => {
+  describe('GET /projects/:id', () => {
     it('should return a single project', async () => {
       const expectedProject = await database('projects').first()
       const id = expectedProject.id
@@ -29,7 +29,7 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('GET/ projects/:id sad path', () => {
+  describe('GET /projects/:id sad path', () => {
     it('should return a 404 error if an id is not found', async () => {
       const id = 6546
       const res = await request(app).get(`/api/v1/projects/${id}`)
@@ -51,7 +51,7 @@ describe('/api/v1', () => {
     })
   })
 
-  describe('GET/ palettes/:id', () => {
+  describe('GET /palettes/:id', () => {
     it('should return a single project', async () => {
       const expectedPalette = await database('palettes').first()
       const id = expectedPalette.id
@@ -182,9 +182,8 @@ describe('/api/v1', () => {
       const result = res.body
       expect(res.status).toBe(202)
       expect(result).toEqual(`Project ID ${projectId} has been updated`)
-      // is there way to test updated name? Finalize this logic
-      // const newName = await database('projects').first()
-      // expect(newName.name).toBe('NewName')
+      const newName = await database('projects').where('id', projectId).select()
+      expect(newName[0].name).toBe('NewName')
     })
   })
 
@@ -219,9 +218,8 @@ describe('/api/v1', () => {
       const result = res.body
       expect(res.status).toBe(202)
       expect(result).toEqual(`Palette ID ${paletteId} has been updated`)
-      // is there way to test updated name? Finalize this logic
-      // const newName = await database('palettes').first()
-      // expect(newName.name).toBe('NewName')
+      const newName = await database('palettes').where('id', paletteId).select()
+      expect(newName[0].name).toBe('NewName')
     })
   })
 
@@ -252,7 +250,7 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/projects/${firstId}`)
       const newProjects = await database('projects').first()
       const newFirstId = newProjects.id
-      expect(res.status).toEqual(202)
+      expect(res.status).toEqual(204)
       expect(newFirstId).not.toEqual(firstId)
     })
     it('should delete any palettes associated with a project', async () => {
@@ -284,7 +282,7 @@ describe('/api/v1', () => {
       const res = await request(app).del(`/api/v1/palettes/${firstId}`)
       const newPalettes = await database('palettes').first()
       const newFirstId = newPalettes.id
-      expect(res.status).toEqual(202)
+      expect(res.status).toEqual(204)
       expect(newFirstId).not.toEqual(firstId)
     })
   })

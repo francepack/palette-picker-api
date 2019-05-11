@@ -6,12 +6,21 @@ const configuration = require("./knexfile")[environment]
 const database = require("knex")(configuration)
 const cors = require('cors')
 
-// app.use(express.json())
 app.use(bodyParser.json())
 app.use(cors())
 
 app.locals.title = "picker";
 
+// Helper functions
+// Send 422
+// Send 404
+// Send 500
+// Send 200?
+// Send 202?
+// Send 204?
+
+
+// Home route
 
 // GET projects
 app.get("/api/v1/projects", (req, res) => {
@@ -91,6 +100,8 @@ app.get("/api/v1/projects/:id/palettes", (req, res) => {
       res.status(500).json({ error });
     });
 });
+
+// GET palette by name
 
 // POST new project
 app.post("/api/v1/projects", (req, res) => {
@@ -219,7 +230,6 @@ app.put("/api/v1/palettes/:id", (req, res) => {
     });
 });
 
-
 // DELETE project and all associated palettes
 app.delete("/api/v1/projects/:id", (req, res) => {
   let found = false;
@@ -239,7 +249,7 @@ app.delete("/api/v1/projects/:id", (req, res) => {
           .then(() => {
             database("projects").where("id", req.params.id).del()
               .then(() => {
-                res.status(202).json(
+                res.status(204).send(
                   `Successful deletion of project id ${req.params.id} and all associated palettes`
                 );
               });
@@ -268,7 +278,7 @@ app.delete("/api/v1/palettes/:id", (req, res) => {
       } else {
         database("palettes").where("id", req.params.id).del()
           .then(() => {
-            res.status(202).json(
+            res.status(204).send(
               `Successful deletion of palette id ${req.params.id}`
             );
           });
@@ -278,6 +288,5 @@ app.delete("/api/v1/palettes/:id", (req, res) => {
       res.status(500).json({ error });
     });
 });
-
 
 module.exports = app
