@@ -76,6 +76,30 @@ Get all palettes from database.
   }
 ]
 ```
+#### Optional query, get palette by name
+
+**Example Request**
+
+```
+/api/v1/palettes?name=PALETTE_NAME_HERE
+```
+
+**Example Response**
+```
+{
+    "id": 12,
+    "name": "PALETTE_NAME_HERE",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
+    "project_id": 2,
+    "created_at": "2019-05-11T22:07:04.988Z",
+    "updated_at": "2019-05-11T22:07:04.988Z"
+}
+```
+
 
 ### GET **/api/v1/projects/:id**
 Get a particular project by id from database.
