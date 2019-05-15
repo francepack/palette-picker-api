@@ -1,53 +1,62 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const environment = process.env.NODE_ENV || "development"
-const configuration = require("./knexfile")[environment]
-const database = require("knex")(configuration)
-const cors = require('cors')
+const environment = process.env.NODE_ENV || "development";
+const configuration = require("./knexfile")[environment];
+const database = require("knex")(configuration);
+const cors = require('cors');
 
-app.use(bodyParser.json())
-app.use(cors())
+app.use(bodyParser.json());
+app.use(cors());
 
 app.locals.title = "picker";
 
 // Response Success functions
-const send200 = (res, message) => res.status(200).json(message)
-const send201 = (res, message) => res.status(201).json(message)
-const send202 = (res, message) => res.status(202).json(message)
-const send204 = (res, message) => res.status(204).send(message)
+const send200 = (res, message) => res.status(200).json(message);
+const send201 = (res, message) => res.status(201).json(message);
+const send202 = (res, message) => res.status(202).json(message);
+const send204 = (res, message) => res.status(204).send(message);
 
 // Response Error functions
-const send404 = (res, message) => res.status(404).json(message)
-const send422 = (res, message) => res.status(422).json(message)
-const send500 = (res, message) => res.status(500).json(message)
+const send404 = (res, message) => res.status(404).json(message);
+const send422 = (res, message) => res.status(422).json(message);
+const send500 = (res, message) => res.status(500).json(message);
 
 // Home route
 app.get("/", (req, res) => send200(res, 'Palette Picker- please see documentation for use'));
 
 // GET projects
 app.get("/api/v1/projects", (req, res) => {
-database("projects")
-  .select()
-  .then((projects) => {
-    send200(res, projects);
-  })
-  .catch((error) => {
-    send500(res, error.message);
-  });
+  database("projects")
+    .select()
+    .then((projects) => {
+      send200(res, projects);
+    })
+    .catch((error) => {
+      send500(res, error.message);
+    });
 });
 
-// GET palettes
+// GET palettes (optional query: palette name)
 app.get("/api/v1/palettes", (req, res) => {
+  var name = req.query.name;
   database("palettes")
     .select()
     .then((palettes) => {
+      if (name) {
+        const paletteByName = palettes.find(palette => name === palette.name)
+        if (paletteByName) {
+          send200(res, paletteByName)
+        } else {
+          send422(res, `Palette with name ${name} does not exist`)
+        }
+      }
       send200(res, palettes);
     })
     .catch((error) => {
       send500(res, error.message);
     });
-  });
+});
 
 // GET a project
 app.get("/api/v1/projects/:id", (req, res) => {
@@ -64,7 +73,7 @@ app.get("/api/v1/projects/:id", (req, res) => {
     .catch((error) => {
       send500(res, error.message);
     });
-  });
+});
 
 // GET a palette
 app.get("/api/v1/palettes/:id", (req, res) => {
@@ -81,7 +90,7 @@ app.get("/api/v1/palettes/:id", (req, res) => {
     .catch((error) => {
       send500(res, error.message);
     });
-  });
+});
 
 // GET all palettes of a project
 app.get("/api/v1/projects/:id/palettes", (req, res) => {
@@ -97,8 +106,6 @@ app.get("/api/v1/projects/:id/palettes", (req, res) => {
       send500(res, error.message);
     });
 });
-
-// GET palette by name
 
 // POST new project
 app.post("/api/v1/projects", (req, res) => {
@@ -231,7 +238,7 @@ app.delete("/api/v1/projects/:id", (req, res) => {
       }
     })
     .catch(error => {
-      sned500(res, error.message);
+      send500(res, error.message);
     });
 });
 
@@ -259,4 +266,4 @@ app.delete("/api/v1/palettes/:id", (req, res) => {
     });
 });
 
-module.exports = app
+module.exports = app;
