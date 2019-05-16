@@ -1,7 +1,8 @@
 # Palette-picker API
-This API holds user data regarding palettes for projects. This API is used for the palette-pick application found here: [Palette-picker]().
+This API holds user data regarding palettes for projects. This API is used for the palette-pick application found here: [Palette-picker](https://github.com/TomWilhoit/palette-picker).
 
 ### Deployment
+[palette-picker api on heroku](https://palette-api-tm.herokuapp.com/)
 
 # API calls
 ## GET
@@ -41,11 +42,11 @@ Get all palettes from database.
   {
     "id": 10,
     "name": "My Color Palette",
-    "color1": "",
-    "color2": "",
-    "color3": "",
-    "color4": "",
-    "color5": "",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
     "project_id": "2",
     "created_at": "2019-05-01T01:28:48.218Z",
     "updated_at": "2019-05-01T01:28:48.218Z"
@@ -53,11 +54,11 @@ Get all palettes from database.
   {
     "id": 11,
     "name": "Candy colors",
-    "color1": "",
-    "color2": "",
-    "color3": "",
-    "color4": "",
-    "color5": "",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
     "project_id": "3",
     "created_at": "2019-05-01T01:28:48.226Z",
     "updated_at": "2019-05-01T01:28:48.226Z"
@@ -65,11 +66,11 @@ Get all palettes from database.
   {
     "id": 12,
     "name": "Ocean colors",
-    "color1": "",
-    "color2": "",
-    "color3": "",
-    "color4": "",
-    "color5": "",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
     "project_id": "1",
     "created_at": "2019-05-01T01:28:48.237Z",
     "updated_at": "2019-05-01T01:28:48.237Z"
@@ -122,11 +123,11 @@ Get a particular palette by id from database.
 {
     "id": 10,
     "name": "My Color Palette",
-    "color1": "",
-    "color2": "",
-    "color3": "",
-    "color4": "",
-    "color5": "",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
     "project_id": "3",
     "created_at": "2019-05-01T01:28:48.218Z",
     "updated_at": "2019-05-01T01:28:48.218Z"
@@ -142,11 +143,11 @@ Get all palettes of a particular project by id from database.
   {
     "id": 10,
     "name": "My Color Palette",
-    "color1": "",
-    "color2": "",
-    "color3": "",
-    "color4": "",
-    "color5": "",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
     "project_id": "3",
     "created_at": "2019-05-01T01:28:48.218Z",
     "updated_at": "2019-05-01T01:28:48.218Z"
@@ -154,11 +155,11 @@ Get all palettes of a particular project by id from database.
   {
     "id": 11,
     "name": "Candy colors",
-    "color1": "",
-    "color2": "",
-    "color3": "",
-    "color4": "",
-    "color5": "",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
     "project_id": "3",
     "created_at": "2019-05-01T01:28:48.226Z",
     "updated_at": "2019-05-01T01:28:48.226Z"
@@ -166,11 +167,11 @@ Get all palettes of a particular project by id from database.
   {
     "id": 12,
     "name": "Ocean colors",
-    "color1": "",
-    "color2": "",
-    "color3": "",
-    "color4": "",
-    "color5": "",
+    "color1": "33812B",
+    "color2": "A0B09E",
+    "color3": "39D8B4",
+    "color4": "9D27AB",
+    "color5": "652B81",
     "project_id": "3",
     "created_at": "2019-05-01T01:28:48.237Z",
     "updated_at": "2019-05-01T01:28:48.237Z"
@@ -221,11 +222,11 @@ Add a palette to a particular project by id. To post a palette, there must be an
 ```
 {
   "name": "Mason France",
-  "color1": "",
-  "color2": "",
-  "color3": "",
-  "color4": "",
-  "color5": ""
+  "color1": "33812B",
+  "color2": "A0B09E",
+  "color3": "39D8B4",
+  "color4": "9D27AB",
+  "color5": "652B81",
 }
 ```
 
@@ -278,11 +279,11 @@ Revise a particular palette by id.
 ```
 {
   "name": "New palette",
-  "color1": "",
-  "color2": "",
-  "color3": "",
-  "color4": "",
-  "color5": ""
+  "color1": "33812B",
+  "color2": "A0B09E",
+  "color3": "39D8B4",
+  "color4": "9D27AB",
+  "color5": "652B81",
 }
 ```
 
