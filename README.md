@@ -4,6 +4,10 @@ This API holds user data regarding palettes for projects. This API is used for t
 ### Deployment
 [palette-picker api on heroku](https://palette-api-tm.herokuapp.com/)
 
+### Created by
+[Mason France](https://github.com/francepack)
+[Tom Wilhoit](https://github.com/TomWilhoit)
+
 # API calls
 ## GET
 ### GET **/api/v1/projects**
