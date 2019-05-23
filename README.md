@@ -1,8 +1,8 @@
 # Palette-picker API
-This API holds user data regarding palettes for projects. This API is used for the palette-pick application found here: [Palette-picker](https://github.com/TomWilhoit/palette-picker).
+This API holds user data regarding palettes for projects. This API is used for the palette-pick application found here: [Palette-Picker](https://github.com/TomWilhoit/palette-picker).
 
 ### Deployment
-[palette-picker api on heroku](https://palette-api-tm.herokuapp.com/)
+[Palette-Picker api on heroku](https://palette-api-tm.herokuapp.com/)
 
 ### Created by
 [Mason France](https://github.com/francepack)
